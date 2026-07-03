@@ -73,12 +73,29 @@ class ServerMonitor {
 
     async check() {
 
+        const host = process.env.HOST;
+        const port = Number(process.env.PORT);
+
+        if (!host || Number.isNaN(port)) {
+
+            logger.warn(
+                "Minecraft monitor is not configured. Set HOST and PORT in your .env file."
+            );
+
+            this.serverData.online = false;
+            this.serverData.players = 0;
+            this.serverData.playerList = [];
+            this.updatePresence();
+            return;
+
+        }
+
         try {
 
             const status = await util.status(
-                process.env.HOST,
+                host,
                 {
-                    port: Number(process.env.PORT),
+                    port,
                     timeout: 5000
                 }
             );

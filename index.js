@@ -1,7 +1,9 @@
-require("dotenv").config();
-
 const fs = require("fs");
 const path = require("path");
+
+const { loadEnvironment } = require("./src/utils/env");
+
+loadEnvironment();
 
 const {
     Client,
