@@ -1,0 +1,29 @@
+{
+  "name": "Jarvis",
+  "version": "1.0.0",
+  "description": "Discord bot for monitoring an Aternos Minecraft server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "deploy": "node deploy-commands.js"
+  },
+  "keywords": [
+    "discord",
+    "minecraft",
+    "aternos",
+    "bot",
+    "discordjs"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "discord.js": "^14.21.0",
+    "dotenv": "^17.2.0",
+    "minecraft-server-util": "^5.4.4"
+  }
+}
