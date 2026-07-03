@@ -2,11 +2,10 @@ const {
     ActivityType
 } = require("discord.js");
 
-const util = require("minecraft-server-util");
-
 const embeds = require("../utils/embeds");
 const logger = require("../utils/logger");
 const database = require("../database/database");
+const { getMinecraftStatus } = require("../utils/minecraft");
 
 const playerTracker = require("./playerTracker");
 const channelUpdater = require("./channelUpdater");
@@ -74,12 +73,16 @@ class ServerMonitor {
     async check() {
 
         const host = process.env.HOST;
-        const port = Number(process.env.PORT);
+        const portValue = process.env.PORT;
+        const port = Number(portValue);
+        const hasCookieAuth = Boolean(
+            process.env.ATERNOS_SESSION_COOKIE && process.env.ATERNOS_SERVER_COOKIE
+        ) || Boolean(process.env.ATERNOS_STATUS_URL);
 
-        if (!host || Number.isNaN(port)) {
+        if (!host || (Number.isNaN(port) && !hasCookieAuth)) {
 
             logger.warn(
-                "Minecraft monitor is not configured. Set HOST and PORT in your .env file."
+                "Minecraft monitor is not configured. Set HOST and either PORT or Aternos cookies in your .env file."
             );
 
             this.serverData.online = false;
@@ -92,13 +95,7 @@ class ServerMonitor {
 
         try {
 
-            const status = await util.status(
-                host,
-                {
-                    port,
-                    timeout: 5000
-                }
-            );
+            const status = await getMinecraftStatus(host, Number.isNaN(port) ? 25565 : port, 5000);
 
             this.serverData = {
 
